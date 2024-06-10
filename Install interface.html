@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AFERY UI app Store Install Wizard</title>
+    <link rel="stylesheet" href="styles.css">
+<style>
+
+body {
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f5f5f5;
+}
+
+.wizard-container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    max-width: 100%;
+}
+
+.wizard-header {
+    text-align: center;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 10px;
+    background-color: #000000;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.progress {
+    height: 100%;
+    width: 0%;
+    background-color: #4caf50;
+    transition: width 0.3s;
+}
+
+.wizard-step {
+    display: none;
+}
+
+.wizard-step.active {
+    display: block;
+}
+
+h1, h2 {
+    margin: 0;
+    color: #424242;
+}
+
+p {
+    color: #757575;
+}
+
+button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+button.btn-primary {
+    background-color: #4caf50;
+    color: white;
+}
+
+button.btn-primary:hover {
+    background-color: #388e3c;
+}
+
+button.btn-secondary {
+    background-color: #757575;
+    color: white;
+    margin-right: 10px;
+}
+
+button.btn-secondary:hover {
+    background-color: #616161;
+}
+
+label {
+    display: block;
+    margin: 10px 0;
+    color: #424242;
+}
+
+input[type="text"], input[type="email"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.loading:before {
+    content: "";
+    width: 30px;
+    height: 30px;
+    border: 4px solid #4caf50;
+    border-top: 4px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+
+</style>
+
+
+<script>
+
+let currentStep = 1;
+
+function nextStep(step) {
+    if (step === 3 && !validateAppSelection()) return;
+    if (step === 4 && !validateUserInfo()) return;
+    updateProgressBar(step);
+    showStep(step);
+}
+
+function prevStep(step) {
+    updateProgressBar(step);
+    showStep(step);
+}
+
+function showStep(step) {
+    document.querySelectorAll('.wizard-step').forEach(function(step) {
+        step.classList.remove('active');
+    });
+    document.getElementById('step-' + step).classList.add('active');
+    currentStep = step;
+}
+
+function updateProgressBar(step) {
+    const progress = document.querySelector('.progress');
+    progress.style.width = (step - 1) * 33 + '%';
+}
+
+function validateAppSelection() {
+    const appSelectionForm = document.getElementById('app-selection-form');
+    const selectedApps = Array.from(appSelectionForm.elements['app']).filter(checkbox => checkbox.checked);
+    if (selectedApps.length === 0) {
+        alert('Please select at least one app.');
+        return false;
+    }
+    return true;
+}
+
+function validateUserInfo() {
+    const userInfoForm = document.getElementById('user-info-form');
+    const userName = userInfoForm.elements['name'].value.trim();
+    const userEmail = userInfoForm.elements['email'].value.trim();
+    if (!userName || !userEmail) {
+        alert('Please fill in all fields.');
+        return false;
+    }
+    return true;
+}
+
+function submitForm() {
+    const installButton = document.querySelector('#step-4 .btn-primary');
+    installButton.disabled = true;
+    installButton.innerHTML = '<div class="loading"></div>';
+
+    // Mock installation process
+    setTimeout(() => {
+        alert('Installation complete!');
+        nextStep(5);
+        installButton.disabled = false;
+        installButton.textContent = 'Install';
+    }, 2000);
+}
+
+function resetWizard() {
+    document.querySelectorAll('form').forEach(form => form.reset());
+    updateProgressBar(1);
+    showStep(1);
+    currentStep = 1;
+}
+
+    </script>
+
+</head>
+<body>
+    <div class="wizard-container">
+        <div class="wizard-header">
+            <h1>AFERY UI App Store Install Wizard</h1>
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+        </div>
+        <div class="wizard-content">
+            <div id="step-1" class="wizard-step active">
+                <h2>In here</h2>
+                <p>Click next to start installing your GRAND THEF AUTO San andreas
+                    By rockstar Games</p>
+                    <center><img src="2.jpg" alt="App 1"></center>
+                    <br>
+                    <center><button class="btn-primary" onclick="nextStep(2)">Next</button></center>
+            </div>
+            <div id="step-2" class="wizard-step">
+                <h2>Select Apps</h2>
+                <form id="app-selection-form">
+                    <label><input type="checkbox" name="app" value="App 1"> Install</label>
+                    <label><input type="checkbox" name="app" value="App 2"> A</label>
+                    <label><input type="checkbox" name="app" value="App 3"> Z</label>
+                </form>
+                <button class="btn-secondary" onclick="prevStep(1)">Back</button>
+                <button class="btn-primary" onclick="nextStep(3)">Next</button>
+            </div>
+            <div id="step-3" class="wizard-step">
+                <h2>User Information</h2>
+                <form id="user-info-form">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </form>
+                <button class="btn-secondary" onclick="prevStep(2)">Back</button>
+                <button class="btn-primary" onclick="nextStep(4)">Next</button>
+            </div>
+            <div id="step-4" class="wizard-step">
+                <h2>Installation Confirmation</h2>
+                <p>Thank you for providing your information. Click install to proceed with the installation of the selected apps.</p>
+                <button class="btn-secondary" onclick="prevStep(3)">Back</button>
+                <button class="btn-primary" onclick="submitForm()">Install</button>
+            </div>
+            <div id="step-5" class="wizard-step">
+                <h2>Installation Complete</h2>
+                <p>Your selected apps have been installed successfully!</p>
+                <button class="btn-primary" onclick="resetWizard()">Finish</button>
+            </div>
+        </div>
+    </div>
+    <script src="scripts.js"></script>
+</body>
+</html>
